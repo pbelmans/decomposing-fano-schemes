@@ -1,0 +1,25 @@
+name: Check conjectural identity in Grothendieck ring
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - check.sage
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    container:
+      image: sagemath/sagemath:10.2
+      options: --user root
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v4
+      - name: Checkout Hodge diamond cutter
+        uses: actions/checkout@v4
+        with:
+          repository: pbelmans/hodge-diamond-cutter
+          path: hodge-diamond-cutter
+          ref: 1950acc
+      - name: Install the Hodge diamond cutter
+        run: sudo -H sage --pip install hodge-diamond-cutter/
+      - name: Run the tests that verify the conjectures
+        run: sage check.sage
